@@ -172,10 +172,8 @@ function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received
               </div>
 
               <footer className="ps-foot">
-                <p className="ps-thanks">Shukriya! Dobara tashreef laiye.</p>
-                <p>
-                  Ye estimate hai, final bill nahi. Rates badal sakte hain. — WhatsApp +92 546501637
-                </p>
+                <p className="ps-thanks">Shukriya!</p>
+                <p>Plaza Steel &amp; Crockery — WhatsApp +92 546501637</p>
               </footer>
             </td>
           </tr>

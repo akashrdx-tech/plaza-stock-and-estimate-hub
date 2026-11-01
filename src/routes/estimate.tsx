@@ -62,6 +62,7 @@ function QtyInput({
   );
 }
 import { getPublicCatalogue } from "@/lib/stock.functions";
+import { EstimatePrintSheet } from "@/components/EstimatePrintSheet";
 import { SHOP_WHATSAPP_DIGITS, formatPKR, waLink, type PublicItem } from "@/lib/stock-types";
 
 const catalogueQuery = queryOptions({
@@ -603,110 +604,16 @@ function EstimatePage() {
         </div>
 
         {/* -------- Print sheet (B5) -------- */}
-        <div className="print-sheet" aria-hidden="true">
-          <header className="flex items-start justify-between gap-4 border-b-2 border-black pb-3">
-            <div className="flex items-center gap-3">
-              <img src="/logo-plaza.png" alt="" className="h-14 w-14 object-contain" />
-              <div>
-                <p className="text-lg font-bold">PLAZA STEEL &amp; CROCKERY</p>
-                <p className="text-xs">WhatsApp: +92 546501637</p>
-              </div>
-            </div>
-            <div className="text-right text-xs">
-              <p className="text-base font-bold">ESTIMATE BILL</p>
-              <p>Bill No: {meta.billNo}</p>
-              <p>Date: {meta.date}</p>
-            </div>
-          </header>
-
-          {(meta.customerName || meta.customerPhone || meta.customerAddress) && (
-            <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-              <p>
-                <span className="font-semibold">Customer: </span>
-                {meta.customerName || "—"}
-              </p>
-              <p>
-                <span className="font-semibold">Number: </span>
-                {meta.customerPhone || "—"}
-              </p>
-              {meta.customerAddress ? (
-                <p className="col-span-2">
-                  <span className="font-semibold">Address: </span>
-                  {meta.customerAddress}
-                </p>
-              ) : null}
-            </div>
-          )}
-
-          <table className="mt-3 w-full border-collapse text-xs">
-            <thead>
-              <tr className="border border-black bg-black/5 text-left">
-                <th className="border border-black px-2 py-1">#</th>
-                <th className="border border-black px-2 py-1">Item</th>
-                <th className="border border-black px-2 py-1 text-center">Qty</th>
-                <th className="border border-black px-2 py-1 text-right">Rate</th>
-                <th className="border border-black px-2 py-1 text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lines.map((line, index) => (
-                <tr key={line.id}>
-                  <td className="border border-black px-2 py-1">{index + 1}</td>
-                  <td className="border border-black px-2 py-1">
-                    {line.name}
-                    {line.code ? ` (${line.code})` : ""}
-                  </td>
-                  <td className="border border-black px-2 py-1 text-center">
-                    {formatQty(line.qty)}
-                  </td>
-                  <td className="border border-black px-2 py-1 text-right">
-                    {formatPKR(line.unitPrice)}
-                  </td>
-                  <td className="border border-black px-2 py-1 text-right">
-                    {formatPKR(lineAmount(line.qty, line.unitPrice))}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div className="mt-3 ml-auto w-56 text-xs">
-            <div className="flex justify-between border-t border-black py-1">
-              <span>Subtotal</span>
-              <span>Rs {formatPKR(subtotal)}</span>
-            </div>
-            {discount > 0 ? (
-              <div className="flex justify-between py-1">
-                <span>
-                  Discount{discountMode === "percent" && discountNumber ? ` (${discountNumber}%)` : ""}
-                </span>
-                <span>- Rs {formatPKR(discount)}</span>
-              </div>
-            ) : null}
-            <div className="flex justify-between border-t-2 border-black py-1 text-sm font-bold">
-              <span>Total</span>
-              <span>Rs {formatPKR(total)}</span>
-            </div>
-            {received > 0 ? (
-              <>
-                <div className="flex justify-between py-1">
-                  <span>Received</span>
-                  <span>Rs {formatPKR(received)}</span>
-                </div>
-                <div className="flex justify-between py-1 font-semibold">
-                  <span>Balance</span>
-                  <span>Rs {formatPKR(balance)}</span>
-                </div>
-              </>
-            ) : null}
-          </div>
-
-          {meta.notes ? <p className="mt-3 text-xs">Note: {meta.notes}</p> : null}
-
-          <p className="mt-6 border-t border-black pt-2 text-center text-[10px]">
-            Shukriya! Plaza Steel &amp; Crockery — WhatsApp +92 546501637
-          </p>
-        </div>
+        <EstimatePrintSheet
+          meta={meta}
+          lines={lines}
+          subtotal={subtotal}
+          discount={discount}
+          discountLabel={`Discount${discountMode === "percent" && discountNumber ? ` (${discountNumber}%)` : ""}`}
+          total={total}
+          received={received}
+          balance={balance}
+        />
       </section>
 
       {/* -------- Saved bills -------- */}
