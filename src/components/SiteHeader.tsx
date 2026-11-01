@@ -13,7 +13,8 @@ const links = [
 
 export function SiteHeader() {
   const lines = useBill();
-  const count = lines.reduce((sum, line) => sum + line.qty, 0);
+  // Item lines on the bill (decimal kg/litre qty would make a summed badge read oddly).
+  const count = lines.length;
 
   return (
     <header className="no-print sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl">
