@@ -7,3 +7,5 @@
 - [x] Diagnose Vercel security block: the supplied deployment uses an older commit with TanStack Start 1.168.32; current package and lockfile pin the required patched 1.168.60.
 - [x] Document deploying the latest GitHub commit without reusing the old build cache or bypassing Vercel's security check.
 - [ ] Verify hosted Vercel deployment — blocked until the project is deployed on Vercel and its live URL is supplied.
+- [x] Copy the plaza-stock-and-estimates GitHub project into this Lovable project; all pages verified loading.
+- [ ] Admin sign-in — blocked until the admin username and password are added in the secure form.
