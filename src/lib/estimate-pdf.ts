@@ -1,6 +1,6 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 
-import { type BillLine, type BillMeta } from "./estimate-store";
+import { formatQty, lineAmount, type BillLine, type BillMeta } from "./estimate-store";
 
 const MM = 72 / 25.4;
 const PAGE_W = 176 * MM; // B5 portrait: 176mm x 250mm
@@ -193,9 +193,17 @@ export async function buildBillPdf(input: BillPdfInput): Promise<Uint8Array> {
       8,
     );
     draw(page, line.unit || "Pcs", xUnit + wUnit / 2, y - 10.5, 8, font, "center");
-    draw(page, fmt(line.qty), xQty + wQty / 2, y - 10.5, 8, font, "center");
+    draw(page, formatQty(line.qty), xQty + wQty / 2, y - 10.5, 8, font, "center");
     draw(page, fmt(line.unitPrice), xRate + wRate - 3, y - 10.5, 8, font, "right");
-    draw(page, fmt(line.unitPrice * line.qty), xAmount + wAmount - 3, y - 10.5, 8, font, "right");
+    draw(
+      page,
+      fmt(lineAmount(line.qty, line.unitPrice)),
+      xAmount + wAmount - 3,
+      y - 10.5,
+      8,
+      font,
+      "right",
+    );
     y -= ROW_H;
   });
   page.drawLine({ start: { x: MARGIN, y }, end: { x: xEnd, y }, thickness: 0.6, color: BLACK });

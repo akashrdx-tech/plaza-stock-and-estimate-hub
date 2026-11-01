@@ -9,3 +9,4 @@
 - [ ] Verify hosted Vercel deployment — blocked until the project is deployed on Vercel and its live URL is supplied.
 - [x] Copy the plaza-stock-and-estimates GitHub project into this Lovable project; all pages verified loading.
 - [ ] Admin sign-in — blocked until the admin username and password are added in the secure form.
+- [x] Estimate Bill: decimal qty (0.5, 1.25, 2.750) and deletable default qty 1; verified in browser and tests.

@@ -1,15 +1,66 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   bill,
+  cleanQtyInput,
   computeTotals,
+  formatQty,
+  lineAmount,
+  parseQty,
+  roundQty,
   useBill,
   useBillMeta,
   useSavedBills,
   type SavedBill,
 } from "@/lib/estimate-store";
+
+/**
+ * Quantity box that keeps the raw typed text (so "", "0", "0." and "0.5" all work)
+ * and only reports the parsed number upward. Empty becomes 0 on blur.
+ */
+function QtyInput({
+  qty,
+  label,
+  onChange,
+}: {
+  qty: number;
+  label: string;
+  onChange: (qty: number) => void;
+}) {
+  const [raw, setRaw] = useState(() => formatQty(qty));
+  const [focused, setFocused] = useState(false);
+
+  // Follow outside changes (+ / − buttons, loading a saved bill) when not typing.
+  useEffect(() => {
+    if (!focused) setRaw(formatQty(qty));
+  }, [qty, focused]);
+
+  return (
+    <input
+      value={raw}
+      onChange={(event) => {
+        const next = cleanQtyInput(event.target.value);
+        setRaw(next);
+        onChange(parseQty(next));
+      }}
+      onFocus={(event) => {
+        setFocused(true);
+        event.target.select();
+      }}
+      onBlur={() => {
+        setFocused(false);
+        const value = parseQty(raw);
+        setRaw(formatQty(value));
+        onChange(value);
+      }}
+      inputMode="decimal"
+      aria-label={label}
+      className="w-16 rounded-md border border-border bg-input px-1 py-1 text-center text-sm outline-none focus:border-ring"
+    />
+  );
+}
 import { getPublicCatalogue } from "@/lib/stock.functions";
 import { SHOP_WHATSAPP_DIGITS, formatPKR, waLink, type PublicItem } from "@/lib/stock-types";
 
@@ -71,7 +122,7 @@ function EstimatePage() {
       .slice(0, 10);
   }, [data.items, search]);
 
-  const subtotal = lines.reduce((sum, line) => sum + line.unitPrice * line.qty, 0);
+  const subtotal = lines.reduce((sum, line) => sum + lineAmount(line.qty, line.unitPrice), 0);
   const discountNumber = Number(discountValue.replace(/[^0-9.]/g, "")) || 0;
   const { discount, total } = computeTotals(subtotal, discountMode, discountNumber);
   const received = Math.max(meta.received || 0, 0);
@@ -87,7 +138,8 @@ function EstimatePage() {
   const addCustom = () => {
     const name = customName.trim();
     const rate = Number(customRate.replace(/[^0-9.]/g, "")) || 0;
-    const qty = Math.max(1, Number(customQty.replace(/[^0-9]/g, "")) || 1);
+    // Empty qty box means 1; otherwise use the typed (decimal) value.
+    const qty = customQty.trim() === "" ? 1 : parseQty(customQty);
     if (!name || rate <= 0) return;
     bill.addCustom(name, rate, qty);
     setCustomName("");
@@ -109,9 +161,9 @@ function EstimatePage() {
     "",
     ...lines.map(
       (line, index) =>
-        `${index + 1}. ${line.name}${line.code ? ` (${line.code})` : ""} — ${line.qty} x Rs ${formatPKR(
+        `${index + 1}. ${line.name}${line.code ? ` (${line.code})` : ""} — ${formatQty(line.qty)} x Rs ${formatPKR(
           line.unitPrice,
-        )} = Rs ${formatPKR(line.unitPrice * line.qty)}`,
+        )} = Rs ${formatPKR(lineAmount(line.qty, line.unitPrice))}`,
     ),
     "",
     `Subtotal: Rs ${formatPKR(subtotal)}`,
@@ -228,11 +280,12 @@ function EstimatePage() {
             />
             <input
               value={customQty}
-              onChange={(event) => setCustomQty(event.target.value.replace(/[^0-9]/g, ""))}
+              onChange={(event) => setCustomQty(cleanQtyInput(event.target.value))}
+              onFocus={(event) => event.target.select()}
               onKeyDown={(event) => {
                 if (event.key === "Enter") addCustom();
               }}
-              inputMode="numeric"
+              inputMode="decimal"
               placeholder="Qty"
               aria-label="Custom item quantity"
               className={fieldClass}
@@ -374,27 +427,21 @@ function EstimatePage() {
                             type="button"
                             aria-label={`Decrease quantity of ${line.name}`}
                             onClick={() =>
-                              bill.update(line.id, { qty: Math.max(1, line.qty - 1) })
+                              bill.update(line.id, { qty: roundQty(Math.max(0, line.qty - 1)) })
                             }
                             className="h-7 w-7 rounded-md border border-border text-sm text-muted-foreground transition-colors hover:border-ring hover:text-foreground"
                           >
                             −
                           </button>
-                          <input
-                            value={line.qty}
-                            onChange={(event) =>
-                              bill.update(line.id, {
-                                qty: Math.max(1, Number(event.target.value.replace(/[^0-9]/g, "")) || 1),
-                              })
-                            }
-                            inputMode="numeric"
-                            aria-label={`Quantity of ${line.name}`}
-                            className="w-12 rounded-md border border-border bg-input px-1 py-1 text-center text-sm outline-none focus:border-ring"
+                          <QtyInput
+                            qty={line.qty}
+                            label={`Quantity of ${line.name}`}
+                            onChange={(qty) => bill.update(line.id, { qty })}
                           />
                           <button
                             type="button"
                             aria-label={`Increase quantity of ${line.name}`}
-                            onClick={() => bill.update(line.id, { qty: line.qty + 1 })}
+                            onClick={() => bill.update(line.id, { qty: roundQty(line.qty + 1) })}
                             className="h-7 w-7 rounded-md border border-border text-sm text-muted-foreground transition-colors hover:border-ring hover:text-foreground"
                           >
                             +
@@ -415,7 +462,7 @@ function EstimatePage() {
                         />
                       </td>
                       <td className="py-2 text-right font-semibold">
-                        Rs {formatPKR(line.unitPrice * line.qty)}
+                        Rs {formatPKR(lineAmount(line.qty, line.unitPrice))}
                       </td>
                       <td className="py-2 pl-2 text-right">
                         <button
@@ -609,12 +656,14 @@ function EstimatePage() {
                     {line.name}
                     {line.code ? ` (${line.code})` : ""}
                   </td>
-                  <td className="border border-black px-2 py-1 text-center">{line.qty}</td>
+                  <td className="border border-black px-2 py-1 text-center">
+                    {formatQty(line.qty)}
+                  </td>
                   <td className="border border-black px-2 py-1 text-right">
                     {formatPKR(line.unitPrice)}
                   </td>
                   <td className="border border-black px-2 py-1 text-right">
-                    {formatPKR(line.unitPrice * line.qty)}
+                    {formatPKR(lineAmount(line.qty, line.unitPrice))}
                   </td>
                 </tr>
               ))}
@@ -677,7 +726,7 @@ function SavedBills({ savedBills }: { savedBills: SavedBill[] }) {
       <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {savedBills.map((entry) => {
           const lineTotal = entry.lines.reduce(
-            (sum, line) => sum + line.unitPrice * line.qty,
+            (sum, line) => sum + lineAmount(line.qty, line.unitPrice),
             0,
           );
           return (
