@@ -170,11 +170,6 @@ function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received
                   For Plaza Steel &amp; Crockery
                 </div>
               </div>
-
-              <footer className="ps-foot">
-                <p className="ps-thanks">Shukriya!</p>
-                <p>Plaza Steel &amp; Crockery — WhatsApp +92 546501637</p>
-              </footer>
             </td>
           </tr>
         </tbody>
