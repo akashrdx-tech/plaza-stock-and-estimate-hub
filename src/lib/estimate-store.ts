@@ -27,6 +27,37 @@ export type SavedBill = {
   lines: BillLine[];
 };
 
+/** Round a quantity to 3 decimals (kg / litre / meter) without float noise. */
+export function roundQty(value: number): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.round((value + Number.EPSILON) * 1000) / 1000;
+}
+
+/** Keep only digits and a single dot while the user types; "", "0" and "0." stay as-is. */
+export function cleanQtyInput(raw: string): string {
+  const only = raw.replace(",", ".").replace(/[^0-9.]/g, "");
+  const dot = only.indexOf(".");
+  if (dot === -1) return only;
+  return only.slice(0, dot + 1) + only.slice(dot + 1).replace(/\./g, "").slice(0, 3);
+}
+
+/** Typed text -> quantity. Empty or invalid counts as 0, never negative. */
+export function parseQty(raw: string): number {
+  const n = parseFloat(raw);
+  return Number.isFinite(n) && n > 0 ? roundQty(n) : 0;
+}
+
+/** Qty x rate, rounded to 2 decimals. */
+export function lineAmount(qty: number, unitPrice: number): number {
+  const value = (Number(qty) || 0) * (Number(unitPrice) || 0);
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
+/** Show a quantity with up to 3 decimals (0.5, 1.25, 2.75). */
+export function formatQty(qty: number): string {
+  return String(roundQty(qty));
+}
+
 /** Pure total math so it can be tested and reused. */
 export function computeTotals(
   subtotal: number,
@@ -162,7 +193,9 @@ export const bill = {
     const existing = lines.find((line) => line.id === item.id);
     linesStore.set(
       existing
-        ? lines.map((line) => (line.id === item.id ? { ...line, qty: line.qty + qty } : line))
+        ? lines.map((line) =>
+            line.id === item.id ? { ...line, qty: roundQty(line.qty + qty) } : line,
+          )
         : [
             ...lines,
             {
