@@ -66,10 +66,6 @@ function Sheet({
                 </div>
               </header>
 
-              <div className="ps-title-band">
-                <span className="ps-title-slant" />
-                <p className="ps-doc-title">Estimate Bill</p>
-              </div>
 
               <section className="ps-info">
                 <table className="ps-info-left">
