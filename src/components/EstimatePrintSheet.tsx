@@ -29,7 +29,16 @@ export function EstimatePrintSheet(props: Props) {
   return createPortal(<Sheet {...props} />, document.body);
 }
 
-function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received, balance }: Props) {
+function Sheet({
+  meta,
+  lines,
+  subtotal,
+  discount,
+  discountLabel,
+  total,
+  received,
+  balance,
+}: Props) {
   const totalQty = lines.reduce((sum, line) => sum + (Number(line.qty) || 0), 0);
   const showUnit = lines.some((line) => Boolean(line.unit));
 
@@ -123,70 +132,72 @@ function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received
                 </tbody>
               </table>
 
-              <div className="ps-bottom">
-                <div className="ps-left">
-                  <div className="ps-counts">
-                    <span>
-                      Total Items <b>{lines.length}</b>
-                    </span>
-                    <span>
-                      Total Qty <b>{formatQty(totalQty)}</b>
-                    </span>
+              <div className="ps-end">
+                <div className="ps-bottom">
+                  <div className="ps-left">
+                    <div className="ps-counts">
+                      <span>
+                        Total Items <b>{lines.length}</b>
+                      </span>
+                      <span>
+                        Total Qty <b>{formatQty(totalQty)}</b>
+                      </span>
+                    </div>
+                    <div className="ps-words">
+                      <p className="ps-words-label">Amount in words</p>
+                      <p className="ps-words-value">{amountInWords(total)}</p>
+                    </div>
+                    {meta.notes ? (
+                      <p className="ps-notes">
+                        <b>Note:</b> {meta.notes}
+                      </p>
+                    ) : null}
                   </div>
-                  <div className="ps-words">
-                    <p className="ps-words-label">Amount in words</p>
-                    <p className="ps-words-value">{amountInWords(total)}</p>
-                  </div>
-                  {meta.notes ? (
-                    <p className="ps-notes">
-                      <b>Note:</b> {meta.notes}
-                    </p>
-                  ) : null}
-                </div>
-                <table className="ps-totals">
-                  <tbody>
-                    <tr>
-                      <th>Subtotal</th>
-                      <td>{formatPKR(subtotal)}</td>
-                    </tr>
-                    {discount > 0 ? (
+                  <table className="ps-totals">
+                    <tbody>
                       <tr>
-                        <th>{discountLabel}</th>
-                        <td>- {formatPKR(discount)}</td>
+                        <th>Subtotal</th>
+                        <td>{formatPKR(subtotal)}</td>
                       </tr>
-                    ) : null}
-                    <tr className="ps-grand">
-                      <th>Net Total</th>
-                      <td>Rs {formatPKR(total)}</td>
-                    </tr>
-                    {received > 0 ? (
-                      <>
+                      {discount > 0 ? (
                         <tr>
-                          <th>Received</th>
-                          <td>{formatPKR(received)}</td>
+                          <th>{discountLabel}</th>
+                          <td>- {formatPKR(discount)}</td>
                         </tr>
-                        <tr className="ps-balance">
-                          <th>Balance</th>
-                          <td>Rs {formatPKR(balance)}</td>
-                        </tr>
-                      </>
-                    ) : null}
-                  </tbody>
-                </table>
-              </div>
+                      ) : null}
+                      <tr className="ps-grand">
+                        <th>Net Total</th>
+                        <td>Rs {formatPKR(total)}</td>
+                      </tr>
+                      {received > 0 ? (
+                        <>
+                          <tr>
+                            <th>Received</th>
+                            <td>{formatPKR(received)}</td>
+                          </tr>
+                          <tr className="ps-balance">
+                            <th>Balance</th>
+                            <td>Rs {formatPKR(balance)}</td>
+                          </tr>
+                        </>
+                      ) : null}
+                    </tbody>
+                  </table>
+                </div>
 
-              <div className="ps-sign">
-                <div>
-                  <span />
-                  Prepared By
-                </div>
-                <div>
-                  <span />
-                  Checked By
-                </div>
-                <div>
-                  <span />
-                  Customer Signature
+                <div className="ps-sign">
+                  <div>
+                    <span />
+                    Prepared By
+                  </div>
+                  <div>
+                    <span />
+                    Checked By
+                  </div>
+                  <div>
+                    <span />
+                    Customer Signature
+                  </div>
                 </div>
               </div>
             </td>
