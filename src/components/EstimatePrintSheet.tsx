@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { amountInWords } from "@/lib/amount-words";
 import { formatQty, lineAmount, type BillLine, type BillMeta } from "@/lib/estimate-store";
 import { formatPKR } from "@/lib/stock-types";
 
@@ -30,6 +31,7 @@ export function EstimatePrintSheet(props: Props) {
 
 function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received, balance }: Props) {
   const totalQty = lines.reduce((sum, line) => sum + (Number(line.qty) || 0), 0);
+  const showUnit = lines.some((line) => Boolean(line.unit));
 
   return (
     <div className="print-sheet" aria-hidden="true">
@@ -48,53 +50,60 @@ function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received
           <tr>
             <td>
               <header className="ps-head">
-                <div className="ps-brand">
-                  <img src="/logo-plaza.png" alt="" className="ps-logo" />
-                  <div>
-                    <p className="ps-shop">PLAZA STEEL &amp; CROCKERY</p>
-                    <p className="ps-shop-sub">WhatsApp: +92 546501637</p>
-                  </div>
-                </div>
-                <div className="ps-doc">
-                  <p className="ps-doc-title">ESTIMATE</p>
-                  <table className="ps-doc-meta">
-                    <tbody>
-                      <tr>
-                        <th>Bill No</th>
-                        <td>{meta.billNo || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th>Date</th>
-                        <td>{meta.date || "—"}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <img src="/logo-plaza.png" alt="" className="ps-logo" />
+                <div className="ps-brand-text">
+                  <p className="ps-shop">PLAZA STEEL &amp; CROCKERY</p>
+                  <p className="ps-shop-sub">WhatsApp: +92 546501637</p>
                 </div>
               </header>
 
-              <section className="ps-customer">
-                <p className="ps-label">Customer / Bill To</p>
-                <p className="ps-customer-name">{meta.customerName || "________________________"}</p>
-                <div className="ps-customer-info">
-                  <span>
-                    <b>Number:</b> {meta.customerPhone || "—"}
-                  </span>
-                  {meta.customerAddress ? (
-                    <span>
-                      <b>Address:</b> {meta.customerAddress}
-                    </span>
-                  ) : null}
-                </div>
+              <div className="ps-title-band">
+                <span className="ps-title-slant" />
+                <p className="ps-doc-title">Estimate Bill</p>
+              </div>
+
+              <section className="ps-info">
+                <table className="ps-info-left">
+                  <tbody>
+                    <tr>
+                      <th>Name</th>
+                      <td className="ps-customer-name">
+                        {meta.customerName || "______________________"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Number</th>
+                      <td>{meta.customerPhone || "—"}</td>
+                    </tr>
+                    <tr>
+                      <th>Address</th>
+                      <td>{meta.customerAddress || "—"}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table className="ps-info-right">
+                  <tbody>
+                    <tr>
+                      <th>Bill No.</th>
+                      <td className="ps-bill-no">{meta.billNo || "—"}</td>
+                    </tr>
+                    <tr>
+                      <th>Date</th>
+                      <td>{meta.date || "—"}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </section>
 
               <table className="ps-items">
                 <thead>
                   <tr>
-                    <th className="c-no">#</th>
-                    <th className="c-item">Item Description</th>
-                    <th className="c-qty">Qty</th>
+                    <th className="c-no">Sr.</th>
+                    <th className="c-item">Product &amp; Description</th>
+                    <th className="c-qty">Quantity</th>
+                    {showUnit ? <th className="c-unit">UoM</th> : null}
                     <th className="c-rate">Rate</th>
-                    <th className="c-amt">Amount</th>
+                    <th className="c-amt">Total Value</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -102,13 +111,11 @@ function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received
                     <tr key={line.id}>
                       <td className="c-no">{index + 1}</td>
                       <td className="c-item">
-                        {line.name}
-                        {line.code ? <span className="ps-code"> ({line.code})</span> : null}
+                        <span className="ps-item-name">{line.name}</span>
+                        {line.code ? <span className="ps-code"> {line.code}</span> : null}
                       </td>
-                      <td className="c-qty">
-                        {formatQty(line.qty)}
-                        {line.unit ? <span className="ps-unit"> {line.unit}</span> : null}
-                      </td>
+                      <td className="c-qty">{formatQty(line.qty)}</td>
+                      {showUnit ? <td className="c-unit">{line.unit || ""}</td> : null}
                       <td className="c-rate">{formatPKR(line.unitPrice)}</td>
                       <td className="c-amt">{formatPKR(lineAmount(line.qty, line.unitPrice))}</td>
                     </tr>
@@ -118,10 +125,18 @@ function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received
 
               <div className="ps-bottom">
                 <div className="ps-left">
-                  <p>
-                    <b>Total items:</b> {lines.length} &nbsp;·&nbsp; <b>Total qty:</b>{" "}
-                    {formatQty(totalQty)}
-                  </p>
+                  <div className="ps-counts">
+                    <span>
+                      Total Items <b>{lines.length}</b>
+                    </span>
+                    <span>
+                      Total Qty <b>{formatQty(totalQty)}</b>
+                    </span>
+                  </div>
+                  <div className="ps-words">
+                    <p className="ps-words-label">Amount in words</p>
+                    <p className="ps-words-value">{amountInWords(total)}</p>
+                  </div>
                   {meta.notes ? (
                     <p className="ps-notes">
                       <b>Note:</b> {meta.notes}
@@ -132,23 +147,23 @@ function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received
                   <tbody>
                     <tr>
                       <th>Subtotal</th>
-                      <td>Rs {formatPKR(subtotal)}</td>
+                      <td>{formatPKR(subtotal)}</td>
                     </tr>
                     {discount > 0 ? (
                       <tr>
                         <th>{discountLabel}</th>
-                        <td>- Rs {formatPKR(discount)}</td>
+                        <td>- {formatPKR(discount)}</td>
                       </tr>
                     ) : null}
                     <tr className="ps-grand">
-                      <th>TOTAL</th>
+                      <th>Net Total</th>
                       <td>Rs {formatPKR(total)}</td>
                     </tr>
                     {received > 0 ? (
                       <>
                         <tr>
                           <th>Received</th>
-                          <td>Rs {formatPKR(received)}</td>
+                          <td>{formatPKR(received)}</td>
                         </tr>
                         <tr className="ps-balance">
                           <th>Balance</th>
@@ -163,11 +178,15 @@ function Sheet({ meta, lines, subtotal, discount, discountLabel, total, received
               <div className="ps-sign">
                 <div>
                   <span />
-                  Customer Signature
+                  Prepared By
                 </div>
                 <div>
                   <span />
-                  For Plaza Steel &amp; Crockery
+                  Checked By
+                </div>
+                <div>
+                  <span />
+                  Customer Signature
                 </div>
               </div>
             </td>
