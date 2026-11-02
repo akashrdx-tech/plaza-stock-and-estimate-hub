@@ -299,7 +299,7 @@
 
 @media print {
   @page {
-    size: 176mm 250mm; /* B5 portrait */
+    size: B5 portrait; /* 176mm x 250mm */
     margin: 0; /* removes browser URL/date header + footer */
   }
   html,
@@ -320,12 +320,14 @@
   }
   .print-sheet {
     display: block !important;
-    width: 176mm;
+    width: 100%; /* follows the real paper width, never wider */
+    max-width: 176mm;
+    margin: 0 auto;
     box-sizing: border-box;
-    padding: 0 10mm;
+    padding: 0 11mm; /* stays inside printers' unprintable edge */
     font-family: "Helvetica Neue", Arial, sans-serif;
-    font-size: 9.5pt;
-    line-height: 1.35;
+    font-size: 8.5pt;
+    line-height: 1.3;
     color: #000;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -341,132 +343,114 @@
   }
   .ps-frame {
     width: 100%;
+    table-layout: fixed;
   }
-  .ps-frame > thead,
-  .ps-frame > tfoot {
+  .ps-frame > thead {
     display: table-header-group;
   }
   .ps-frame > tfoot {
     display: table-footer-group;
   }
   .ps-gap-top {
-    height: 8mm;
+    height: 9mm;
   }
   .ps-gap-bottom {
-    height: 8mm;
+    height: 9mm;
   }
 
-  /* Shop header */
+  /* Letterhead: brand left, bill no/date right, double rule below */
   .ps-head {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 4mm;
-    padding-bottom: 2.5mm;
+    padding-bottom: 2.2mm;
+    border-bottom: 2.5pt double #000;
+  }
+  .ps-brand {
+    display: flex;
+    align-items: center;
+    gap: 2.8mm;
+    min-width: 0;
   }
   .ps-logo {
-    width: 16mm;
-    height: 16mm;
+    width: 12mm;
+    height: 12mm;
     object-fit: contain;
-  }
-  .ps-brand-text {
-    text-align: center;
+    flex: none;
   }
   .ps-shop {
-    font-size: 18pt;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    line-height: 1.1;
-  }
-  .ps-shop-sub {
-    margin-top: 1mm !important;
-    font-size: 9pt;
-    letter-spacing: 0.04em;
-    color: #333;
-  }
-
-  /* Title band (grey bar with dark slanted accent) */
-  .ps-title-band {
-    position: relative;
-    overflow: hidden;
-    background: #d9d9d9;
-    border-top: 1pt solid #000;
-    border-bottom: 1.5pt solid #000;
-    padding: 1.6mm 0;
-    text-align: center;
-  }
-  .ps-title-slant {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 30mm;
-    background: #000;
-    clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
-  }
-  .ps-title-band::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 30mm;
-    background: #000;
-    clip-path: polygon(22% 0, 100% 0, 100% 100%, 0 100%);
-  }
-  .ps-doc-title {
-    position: relative;
     font-size: 13pt;
     font-weight: 800;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.1;
+  }
+  .ps-shop-line {
+    margin-top: 0.6mm !important;
+    font-size: 7.5pt;
+    color: #333;
+    letter-spacing: 0.02em;
+  }
+  .ps-meta {
+    flex: none;
+    font-size: 8.5pt;
+  }
+  .ps-meta th {
+    text-align: left;
+    font-weight: 600;
+    color: #444;
+    padding: 0.5mm 3mm 0.5mm 0;
+    white-space: nowrap;
+  }
+  .ps-meta td {
+    text-align: right;
+    font-weight: 700;
+    padding: 0.5mm 0;
+    white-space: nowrap;
+  }
+  .ps-meta .ps-bill-no {
+    font-size: 10pt;
+    font-weight: 800;
   }
 
-  /* Customer + bill info box */
-  .ps-info {
-    display: flex;
+  /* Customer box */
+  .ps-customer {
     margin-top: 2.5mm;
-    border: 1pt solid #000;
+    border: 0.75pt solid #000;
+    padding: 1.6mm 2.4mm;
     break-inside: avoid;
   }
-  .ps-info table {
-    font-size: 9.5pt;
-  }
-  .ps-info th {
-    text-align: left;
-    vertical-align: top;
+  .ps-label {
+    font-size: 7pt;
     font-weight: 600;
-    color: #333;
-    white-space: nowrap;
-    padding: 1.1mm 3mm 1.1mm 3mm;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-right: 1.5mm;
   }
-  .ps-info td {
-    vertical-align: top;
-    font-weight: 600;
-    padding: 1.1mm 3mm 1.1mm 0;
+  .ps-cust-main {
+    display: flex;
+    align-items: baseline;
+  }
+  .ps-customer-name {
+    font-size: 10.5pt;
+    font-weight: 800;
+    text-transform: uppercase;
     word-break: break-word;
   }
-  .ps-info-left {
+  .ps-cust-row {
+    display: flex;
+    gap: 6mm;
+    margin-top: 0.8mm;
+    font-weight: 600;
+  }
+  .ps-cust-row > span {
+    flex: none;
+  }
+  .ps-cust-row > .ps-cust-addr {
     flex: 1;
-    padding: 1mm 0;
-  }
-  .ps-info-left th {
-    width: 18mm;
-  }
-  .ps-info-right {
-    width: 54mm;
-    border-left: 1pt solid #000;
-    padding: 1mm 0;
-  }
-  .ps-info .ps-customer-name {
-    font-size: 16pt;
-    font-weight: 800;
-    line-height: 1.1;
-    text-transform: uppercase;
-  }
-  .ps-info .ps-bill-no {
-    font-size: 11.5pt;
-    font-weight: 800;
+    min-width: 0;
+    word-break: break-word;
   }
 
   /* Items */
@@ -479,28 +463,32 @@
     display: table-header-group; /* repeats on every page */
   }
   .ps-items th {
-    background: #ececec;
-    font-size: 8.5pt;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 7.5pt;
     font-weight: 700;
-    padding: 1.6mm 1.6mm;
-    border-top: 1pt solid #000;
-    border-bottom: 1pt solid #000;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1.3mm 1.4mm;
   }
   .ps-items td {
-    padding: 1.15mm 1.6mm;
-    border-bottom: 0.5pt solid #b5b5b5;
+    padding: 1mm 1.4mm;
+    border-bottom: 0.5pt solid #bdbdbd;
     vertical-align: top;
-    font-size: 9pt;
+    font-size: 8.3pt;
     line-height: 1.25;
+  }
+  .ps-items tbody tr:nth-child(even) td {
+    background: #f4f4f4;
   }
   .ps-items tbody tr {
     break-inside: avoid;
   }
   .ps-items tbody tr:last-child td {
-    border-bottom: 1.5pt solid #000;
+    border-bottom: 1pt solid #000;
   }
   .ps-items .c-no {
-    width: 9mm;
+    width: 7mm;
     text-align: center;
   }
   .ps-items .c-item {
@@ -512,25 +500,25 @@
     text-transform: uppercase;
   }
   .ps-items .c-qty {
-    width: 15mm;
+    width: 11mm;
     text-align: right;
   }
   .ps-items .c-unit {
-    width: 13mm;
+    width: 11mm;
     text-align: left;
   }
   .ps-items .c-rate {
-    width: 20mm;
+    width: 18mm;
     text-align: right;
   }
   .ps-items .c-amt {
-    width: 24mm;
+    width: 21mm;
     text-align: right;
     font-weight: 700;
   }
   .ps-code {
-    color: #555;
-    font-size: 8pt;
+    color: #666;
+    font-size: 7pt;
   }
 
   /* Totals + signatures stay together on one page */
@@ -541,89 +529,74 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 5mm;
-    margin-top: 3mm;
+    gap: 4mm;
+    margin-top: 2.5mm;
     break-inside: avoid;
   }
   .ps-left {
     flex: 1;
-    font-size: 9pt;
+    min-width: 0;
   }
   .ps-counts {
     display: flex;
-    gap: 6mm;
-    color: #333;
+    gap: 5mm;
+    color: #444;
+    padding-top: 1.3mm;
   }
   .ps-counts b {
     color: #000;
     margin-left: 1mm;
   }
-  .ps-words {
-    margin-top: 2mm;
-    border: 0.75pt solid #000;
-    padding: 1.6mm 2.4mm;
-  }
-  .ps-words-label {
-    font-size: 7pt;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: #555;
-  }
-  .ps-words-value {
-    margin-top: 0.6mm !important;
-    font-size: 9.5pt;
-    font-weight: 700;
-    font-style: italic;
-  }
   .ps-notes {
     margin-top: 2mm !important;
     border: 0.5pt dashed #777;
-    padding: 1.5mm 2.4mm;
+    padding: 1.3mm 2mm;
+    word-break: break-word;
   }
   .ps-totals {
-    width: 62mm;
-    font-size: 10pt;
-    border: 1pt solid #000;
+    width: 56mm;
+    flex: none;
+    font-size: 8.8pt;
   }
   .ps-totals th {
     text-align: left;
     font-weight: 600;
-    padding: 1.3mm 2.4mm;
-    border-bottom: 0.5pt solid #b5b5b5;
+    padding: 1.1mm 2mm;
+    border-bottom: 0.5pt solid #bdbdbd;
   }
   .ps-totals td {
     text-align: right;
-    font-weight: 600;
-    padding: 1.3mm 2.4mm;
-    border-bottom: 0.5pt solid #b5b5b5;
+    font-weight: 700;
+    padding: 1.1mm 2mm;
+    border-bottom: 0.5pt solid #bdbdbd;
     white-space: nowrap;
   }
   .ps-totals .ps-grand th,
   .ps-totals .ps-grand td {
-    background: #000;
+    background: #1a1a1a;
     color: #fff;
-    font-size: 12.5pt;
+    font-size: 10.5pt;
     font-weight: 800;
-    padding: 2mm 2.4mm;
+    padding: 1.6mm 2mm;
     border: none;
   }
   .ps-totals .ps-balance th,
   .ps-totals .ps-balance td {
     font-weight: 800;
-    font-size: 11pt;
+    font-size: 9.5pt;
     background: #ececec;
-    border-bottom: none;
+    border-bottom: 1pt solid #000;
   }
 
   /* Signatures */
   .ps-sign {
     display: flex;
     justify-content: space-between;
-    gap: 10mm;
-    margin-top: 10mm;
-    font-size: 9pt;
+    gap: 8mm;
+    margin-top: 12mm;
+    font-size: 7.8pt;
     font-weight: 600;
-    color: #222;
+    color: #333;
     break-inside: avoid;
   }
   .ps-sign > div {
@@ -632,7 +605,7 @@
   }
   .ps-sign span {
     display: block;
-    border-top: 2.5pt double #000;
-    margin-bottom: 1.2mm;
+    border-top: 0.75pt solid #000;
+    margin-bottom: 1mm;
   }
 }
