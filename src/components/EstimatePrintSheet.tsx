@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { amountInWords } from "@/lib/amount-words";
 import { formatQty, lineAmount, type BillLine, type BillMeta } from "@/lib/estimate-store";
 import { formatPKR } from "@/lib/stock-types";
 
@@ -59,34 +58,15 @@ function Sheet({
           <tr>
             <td>
               <header className="ps-head">
-                <img src="/logo-plaza.png" alt="" className="ps-logo" />
-                <div className="ps-brand-text">
-                  <p className="ps-shop">PLAZA STEEL &amp; CROCKERY</p>
-                  <p className="ps-shop-sub">WhatsApp: +92 546501637</p>
+                <div className="ps-brand">
+                  <img src="/logo-plaza.png" alt="" className="ps-logo" />
+                  <div>
+                    <p className="ps-shop">PLAZA STEEL &amp; CROCKERY</p>
+                    <p className="ps-shop-line">Steel · Crockery · Cookware · Home Appliances</p>
+                    <p className="ps-shop-line">WhatsApp: +92 546501637</p>
+                  </div>
                 </div>
-              </header>
-
-
-              <section className="ps-info">
-                <table className="ps-info-left">
-                  <tbody>
-                    <tr>
-                      <th>Name</th>
-                      <td className="ps-customer-name">
-                        {meta.customerName || "______________________"}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Number</th>
-                      <td>{meta.customerPhone || "—"}</td>
-                    </tr>
-                    <tr>
-                      <th>Address</th>
-                      <td>{meta.customerAddress || "—"}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <table className="ps-info-right">
+                <table className="ps-meta">
                   <tbody>
                     <tr>
                       <th>Bill No.</th>
@@ -98,17 +78,34 @@ function Sheet({
                     </tr>
                   </tbody>
                 </table>
+              </header>
+
+              <section className="ps-customer">
+                <div className="ps-cust-main">
+                  <span className="ps-label">Customer</span>
+                  <span className="ps-customer-name">
+                    {meta.customerName || "____________________"}
+                  </span>
+                </div>
+                <div className="ps-cust-row">
+                  <span>
+                    <span className="ps-label">Phone</span> {meta.customerPhone || "—"}
+                  </span>
+                  <span className="ps-cust-addr">
+                    <span className="ps-label">Address</span> {meta.customerAddress || "—"}
+                  </span>
+                </div>
               </section>
 
               <table className="ps-items">
                 <thead>
                   <tr>
-                    <th className="c-no">Sr.</th>
-                    <th className="c-item">Product &amp; Description</th>
-                    <th className="c-qty">Quantity</th>
-                    {showUnit ? <th className="c-unit">UoM</th> : null}
+                    <th className="c-no">#</th>
+                    <th className="c-item">Description</th>
+                    <th className="c-qty">Qty</th>
+                    {showUnit ? <th className="c-unit">Unit</th> : null}
                     <th className="c-rate">Rate</th>
-                    <th className="c-amt">Total Value</th>
+                    <th className="c-amt">Amount</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -133,15 +130,11 @@ function Sheet({
                   <div className="ps-left">
                     <div className="ps-counts">
                       <span>
-                        Total Items <b>{lines.length}</b>
+                        Items <b>{lines.length}</b>
                       </span>
                       <span>
                         Total Qty <b>{formatQty(totalQty)}</b>
                       </span>
-                    </div>
-                    <div className="ps-words">
-                      <p className="ps-words-label">Amount in words</p>
-                      <p className="ps-words-value">{amountInWords(total)}</p>
                     </div>
                     {meta.notes ? (
                       <p className="ps-notes">
