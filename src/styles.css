@@ -324,9 +324,9 @@
     max-width: 176mm;
     margin: 0 auto;
     box-sizing: border-box;
-    padding: 0 11mm; /* stays inside printers' unprintable edge */
+    padding: 0 17mm; /* wide safety margin so printers never clip the sides */
     font-family: "Helvetica Neue", Arial, sans-serif;
-    font-size: 8.5pt;
+    font-size: 7.8pt;
     line-height: 1.3;
     color: #000;
     -webkit-print-color-adjust: exact;
@@ -352,10 +352,10 @@
     display: table-footer-group;
   }
   .ps-gap-top {
-    height: 9mm;
+    height: 12mm;
   }
   .ps-gap-bottom {
-    height: 9mm;
+    height: 12mm;
   }
 
   /* Letterhead: brand left, bill no/date right, double rule below */
@@ -374,26 +374,26 @@
     min-width: 0;
   }
   .ps-logo {
-    width: 12mm;
-    height: 12mm;
+    width: 10mm;
+    height: 10mm;
     object-fit: contain;
     flex: none;
   }
   .ps-shop {
-    font-size: 13pt;
+    font-size: 11pt;
     font-weight: 800;
     letter-spacing: 0.03em;
     line-height: 1.1;
   }
   .ps-shop-line {
-    margin-top: 0.6mm !important;
-    font-size: 7.5pt;
+    margin-top: 0.5mm !important;
+    font-size: 6.8pt;
     color: #333;
     letter-spacing: 0.02em;
   }
   .ps-meta {
     flex: none;
-    font-size: 8.5pt;
+    font-size: 7.8pt;
   }
   .ps-meta th {
     text-align: left;
@@ -409,7 +409,7 @@
     white-space: nowrap;
   }
   .ps-meta .ps-bill-no {
-    font-size: 10pt;
+    font-size: 9pt;
     font-weight: 800;
   }
 
@@ -421,7 +421,7 @@
     break-inside: avoid;
   }
   .ps-label {
-    font-size: 7pt;
+    font-size: 6.3pt;
     font-weight: 600;
     color: #555;
     text-transform: uppercase;
@@ -433,7 +433,7 @@
     align-items: baseline;
   }
   .ps-customer-name {
-    font-size: 10.5pt;
+    font-size: 9.5pt;
     font-weight: 800;
     text-transform: uppercase;
     word-break: break-word;
@@ -465,17 +465,17 @@
   .ps-items th {
     background: #1a1a1a;
     color: #fff;
-    font-size: 7.5pt;
+    font-size: 6.8pt;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 1.3mm 1.4mm;
+    letter-spacing: 0.04em;
+    padding: 1.1mm 1.2mm;
   }
   .ps-items td {
-    padding: 1mm 1.4mm;
+    padding: 0.9mm 1.2mm;
     border-bottom: 0.5pt solid #bdbdbd;
     vertical-align: top;
-    font-size: 8.3pt;
+    font-size: 7.6pt;
     line-height: 1.25;
   }
   .ps-items tbody tr:nth-child(even) td {
@@ -488,7 +488,7 @@
     border-bottom: 1pt solid #000;
   }
   .ps-items .c-no {
-    width: 7mm;
+    width: 6mm;
     text-align: center;
   }
   .ps-items .c-item {
@@ -500,25 +500,25 @@
     text-transform: uppercase;
   }
   .ps-items .c-qty {
-    width: 11mm;
+    width: 10mm;
     text-align: right;
   }
   .ps-items .c-unit {
-    width: 11mm;
+    width: 10mm;
     text-align: left;
   }
   .ps-items .c-rate {
-    width: 18mm;
+    width: 16mm;
     text-align: right;
   }
   .ps-items .c-amt {
-    width: 21mm;
+    width: 19mm;
     text-align: right;
     font-weight: 700;
   }
   .ps-code {
     color: #666;
-    font-size: 7pt;
+    font-size: 6.4pt;
   }
 
   /* Totals + signatures stay together on one page */
@@ -554,9 +554,9 @@
     word-break: break-word;
   }
   .ps-totals {
-    width: 56mm;
+    width: 50mm;
     flex: none;
-    font-size: 8.8pt;
+    font-size: 8pt;
   }
   .ps-totals th {
     text-align: left;
@@ -575,15 +575,15 @@
   .ps-totals .ps-grand td {
     background: #1a1a1a;
     color: #fff;
-    font-size: 10.5pt;
+    font-size: 9.5pt;
     font-weight: 800;
-    padding: 1.6mm 2mm;
+    padding: 1.4mm 2mm;
     border: none;
   }
   .ps-totals .ps-balance th,
   .ps-totals .ps-balance td {
     font-weight: 800;
-    font-size: 9.5pt;
+    font-size: 8.6pt;
     background: #ececec;
     border-bottom: 1pt solid #000;
   }
@@ -593,8 +593,8 @@
     display: flex;
     justify-content: space-between;
     gap: 8mm;
-    margin-top: 12mm;
-    font-size: 7.8pt;
+    margin-top: 11mm;
+    font-size: 7pt;
     font-weight: 600;
     color: #333;
     break-inside: avoid;
