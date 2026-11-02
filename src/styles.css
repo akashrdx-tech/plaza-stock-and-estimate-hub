@@ -356,147 +356,178 @@
     height: 10mm;
   }
 
-  /* Header */
+  /* Shop header */
   .ps-head {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 6mm;
-    padding-bottom: 3mm;
-    border-bottom: 2.5pt solid #000;
-  }
-  .ps-brand {
-    display: flex;
-    align-items: center;
-    gap: 3mm;
+    justify-content: center;
+    gap: 4mm;
+    padding-bottom: 2.5mm;
   }
   .ps-logo {
-    width: 17mm;
-    height: 17mm;
+    width: 16mm;
+    height: 16mm;
     object-fit: contain;
   }
+  .ps-brand-text {
+    text-align: center;
+  }
   .ps-shop {
-    font-size: 16pt;
+    font-size: 18pt;
     font-weight: 800;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
     line-height: 1.1;
   }
   .ps-shop-sub {
     margin-top: 1mm !important;
     font-size: 9pt;
-  }
-  .ps-doc {
-    text-align: right;
-  }
-  .ps-doc-title {
-    display: inline-block;
-    background: #000;
-    color: #fff;
-    font-size: 11pt;
-    font-weight: 800;
-    letter-spacing: 0.25em;
-    padding: 1.2mm 3mm 1.2mm 3.6mm;
-    border-radius: 1mm;
-  }
-  .ps-doc-meta {
-    margin: 1.5mm 0 0 auto;
-    font-size: 9pt;
-  }
-  .ps-doc-meta th {
-    text-align: left;
-    font-weight: 600;
-    padding: 0.3mm 2mm 0.3mm 0;
-    color: #444;
-  }
-  .ps-doc-meta td {
-    text-align: right;
-    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #333;
   }
 
-  /* Customer */
-  .ps-customer {
-    margin-top: 4mm;
+  /* Title band (grey bar with dark slanted accent) */
+  .ps-title-band {
+    position: relative;
+    overflow: hidden;
+    background: #d9d9d9;
+    border-top: 1pt solid #000;
+    border-bottom: 1.5pt solid #000;
+    padding: 1.6mm 0;
+    text-align: center;
+  }
+  .ps-title-slant {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 30mm;
+    background: #000;
+    clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
+  }
+  .ps-title-band::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 30mm;
+    background: #000;
+    clip-path: polygon(22% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .ps-doc-title {
+    position: relative;
+    font-size: 13pt;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  /* Customer + bill info box */
+  .ps-info {
+    display: flex;
+    margin-top: 2.5mm;
     border: 1pt solid #000;
-    border-left: 4pt solid #000;
-    border-radius: 1.5mm;
-    padding: 2.5mm 3.5mm;
     break-inside: avoid;
   }
-  .ps-label {
-    font-size: 7.5pt;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: #555;
+  .ps-info table {
+    font-size: 9.5pt;
   }
-  .ps-customer-name {
-    margin-top: 0.8mm !important;
-    font-size: 19pt;
-    font-weight: 800;
-    line-height: 1.15;
+  .ps-info th {
+    text-align: left;
+    vertical-align: top;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    padding: 1.1mm 3mm 1.1mm 3mm;
+  }
+  .ps-info td {
+    vertical-align: top;
+    font-weight: 600;
+    padding: 1.1mm 3mm 1.1mm 0;
     word-break: break-word;
   }
-  .ps-customer-info {
-    margin-top: 1.2mm;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1mm 8mm;
-    font-size: 10pt;
+  .ps-info-left {
+    flex: 1;
+    padding: 1mm 0;
+  }
+  .ps-info-left th {
+    width: 18mm;
+  }
+  .ps-info-right {
+    width: 54mm;
+    border-left: 1pt solid #000;
+    padding: 1mm 0;
+  }
+  .ps-info .ps-customer-name {
+    font-size: 16pt;
+    font-weight: 800;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .ps-info .ps-bill-no {
+    font-size: 11.5pt;
+    font-weight: 800;
   }
 
   /* Items */
   .ps-items {
     width: 100%;
-    margin-top: 4mm;
+    margin-top: 2.5mm;
     table-layout: fixed;
   }
   .ps-items thead {
     display: table-header-group; /* repeats on every page */
   }
   .ps-items th {
-    background: #000;
-    color: #fff;
+    background: #ececec;
     font-size: 8.5pt;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 1.8mm 1.8mm;
-    border: 0.75pt solid #000;
+    padding: 1.6mm 1.6mm;
+    border-top: 1pt solid #000;
+    border-bottom: 1pt solid #000;
   }
   .ps-items td {
-    padding: 1.6mm 1.8mm;
-    border: 0.5pt solid #777;
+    padding: 1.5mm 1.6mm;
+    border-bottom: 0.5pt solid #b5b5b5;
     vertical-align: top;
     font-size: 9.5pt;
   }
   .ps-items tbody tr {
     break-inside: avoid;
   }
-  .ps-items tbody tr:nth-child(even) td {
-    background: #f1f1f1;
+  .ps-items tbody tr:last-child td {
+    border-bottom: 1.5pt solid #000;
   }
   .ps-items .c-no {
-    width: 8mm;
+    width: 9mm;
     text-align: center;
   }
   .ps-items .c-item {
     text-align: left;
     word-break: break-word;
   }
+  .ps-item-name {
+    font-weight: 600;
+    text-transform: uppercase;
+  }
   .ps-items .c-qty {
-    width: 18mm;
-    text-align: center;
+    width: 17mm;
+    text-align: right;
+  }
+  .ps-items .c-unit {
+    width: 13mm;
+    text-align: left;
   }
   .ps-items .c-rate {
-    width: 22mm;
+    width: 20mm;
     text-align: right;
   }
   .ps-items .c-amt {
-    width: 26mm;
+    width: 24mm;
     text-align: right;
     font-weight: 700;
   }
-  .ps-code,
-  .ps-unit {
+  .ps-code {
     color: #555;
     font-size: 8pt;
   }
@@ -506,60 +537,89 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 6mm;
+    gap: 5mm;
     margin-top: 3mm;
     break-inside: avoid;
   }
   .ps-left {
     flex: 1;
     font-size: 9pt;
-    padding-top: 1mm;
+  }
+  .ps-counts {
+    display: flex;
+    gap: 6mm;
+    color: #333;
+  }
+  .ps-counts b {
+    color: #000;
+    margin-left: 1mm;
+  }
+  .ps-words {
+    margin-top: 2mm;
+    border: 0.75pt solid #000;
+    padding: 1.6mm 2.4mm;
+  }
+  .ps-words-label {
+    font-size: 7pt;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #555;
+  }
+  .ps-words-value {
+    margin-top: 0.6mm !important;
+    font-size: 9.5pt;
+    font-weight: 700;
+    font-style: italic;
   }
   .ps-notes {
     margin-top: 2mm !important;
     border: 0.5pt dashed #777;
-    border-radius: 1mm;
-    padding: 1.5mm 2mm;
+    padding: 1.5mm 2.4mm;
   }
   .ps-totals {
-    width: 64mm;
+    width: 62mm;
     font-size: 10pt;
+    border: 1pt solid #000;
   }
   .ps-totals th {
     text-align: left;
     font-weight: 600;
-    padding: 1.2mm 2mm;
-    border-bottom: 0.5pt solid #bbb;
+    padding: 1.3mm 2.4mm;
+    border-bottom: 0.5pt solid #b5b5b5;
   }
   .ps-totals td {
     text-align: right;
-    padding: 1.2mm 2mm;
-    border-bottom: 0.5pt solid #bbb;
+    font-weight: 600;
+    padding: 1.3mm 2.4mm;
+    border-bottom: 0.5pt solid #b5b5b5;
     white-space: nowrap;
   }
   .ps-totals .ps-grand th,
   .ps-totals .ps-grand td {
     background: #000;
     color: #fff;
-    font-size: 13pt;
+    font-size: 12.5pt;
     font-weight: 800;
-    padding: 2mm;
+    padding: 2mm 2.4mm;
     border: none;
   }
   .ps-totals .ps-balance th,
   .ps-totals .ps-balance td {
     font-weight: 800;
-    border-bottom: 1.5pt solid #000;
+    font-size: 11pt;
+    background: #ececec;
+    border-bottom: none;
   }
 
-  /* Signatures + footer */
+  /* Signatures */
   .ps-sign {
     display: flex;
     justify-content: space-between;
-    gap: 20mm;
-    margin-top: 14mm;
-    font-size: 8.5pt;
-    color: #333;
+    gap: 10mm;
+    margin-top: 16mm;
+    font-size: 9pt;
+    font-weight: 600;
+    color: #222;
     break-inside: avoid;
   }
   .ps-sign > div {
@@ -568,22 +628,7 @@
   }
   .ps-sign span {
     display: block;
-    border-top: 0.75pt solid #000;
-    margin-bottom: 1mm;
-  }
-  .ps-foot {
-    margin-top: 6mm;
-    padding-top: 2mm;
-    border-top: 0.75pt solid #000;
-    text-align: center;
-    font-size: 8pt;
-    color: #333;
-    break-inside: avoid;
-  }
-  .ps-thanks {
-    font-size: 10.5pt;
-    font-weight: 700;
-    color: #000;
-    margin-bottom: 0.5mm !important;
+    border-top: 2.5pt double #000;
+    margin-bottom: 1.2mm;
   }
 }
